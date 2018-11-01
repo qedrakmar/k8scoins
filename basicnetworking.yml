@@ -1,3 +1,5 @@
+# This file adds services to expose the deployments from justdeploys.yml
+
 apiVersion: v1
 kind: Namespace
 metadata:

@@ -1,11 +1,14 @@
-# This is just a second version of basicnetworking.yml, to show where cross-talk happens or doesn't
+# Changed the webui service to replace NodePort with LoadBalancer
+# Using this requires the following command: 
+# minikube service webui -n coins
+# This illustrates the LoadBalancer is itself outside of kubernetes
 
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: coins2
+  name: coins
   labels:
-    name: coins2
+    name: coins
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -13,7 +16,7 @@ metadata:
   name: rng
   labels:
     name: rng
-  namespace: coins2
+  namespace: coins
 spec:
   replicas: 1
   template:
@@ -31,7 +34,7 @@ metadata:
   labels:
     name: rng
   name: rng
-  namespace: coins2
+  namespace: coins
 spec:
   ports:
   - port: 80
@@ -47,7 +50,7 @@ metadata:
   name: hasher
   labels:
     name: hasher
-  namespace: coins2
+  namespace: coins
 spec:
   replicas: 1
   template:
@@ -65,7 +68,7 @@ metadata:
   labels:
     name: hasher
   name: hasher
-  namespace: coins2
+  namespace: coins
 spec:
   ports:
   - port: 80
@@ -81,7 +84,7 @@ metadata:
   name: webui
   labels:
     name: webui
-  namespace: coins2
+  namespace: coins
 spec:
   replicas: 1
   template:
@@ -99,7 +102,7 @@ metadata:
   labels:
     name: webui
   name: webui
-  namespace: coins2
+  namespace: coins
 spec:
   ports:
   - port: 80
@@ -107,7 +110,7 @@ spec:
     targetPort: 80
   selector:
     name: webui
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -115,7 +118,7 @@ metadata:
   name: redis
   labels:
     name: redis
-  namespace: coins2
+  namespace: coins
 spec:
   replicas: 1
   template:
@@ -133,7 +136,7 @@ metadata:
   labels:
     name: redis
   name: redis
-  namespace: coins2
+  namespace: coins
 spec:
   ports:
   - port: 6379
@@ -149,7 +152,7 @@ metadata:
   name: worker
   labels:
     name: worker
-  namespace: coins2
+  namespace: coins
 spec:
   replicas: 1
   template:
