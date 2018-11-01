@@ -1,0 +1,162 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: coins
+  labels:
+    name: coins
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rng
+  labels:
+    name: rng
+  namespace: coins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: rng
+    spec:
+      containers:
+      - name: rng
+        image: nabrahams/rng:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: rng
+  name: rng
+  namespace: coins
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    name: rng
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hasher
+  labels:
+    name: hasher
+  namespace: coins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: hasher
+    spec:
+      containers:
+      - name: hasher
+        image: nabrahams/hasher:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: hasher
+  name: hasher
+  namespace: coins
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    name: hasher
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webui
+  labels:
+    name: webui
+  namespace: coins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: webui
+    spec:
+      containers:
+      - name: webui
+        image: nabrahams/webui:1.0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: webui
+  name: webui
+  namespace: coins
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    name: webui
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    name: redis
+  namespace: coins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: redis
+  name: redis
+  namespace: coins
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    name: redis
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    name: worker
+  namespace: coins
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: worker
+    spec:
+      containers:
+      - name: worker
+        image: nabrahams/worker:1.0
+---
+
